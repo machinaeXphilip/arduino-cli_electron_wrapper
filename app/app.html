@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Arduino Custom Flashing Tool Template</title>
+</head>
+<body>
+
+  <p id="status" style="color:darkblue;"></p>
+  <div id="app" class="container" style="display: none;">
+    <p>
+    <strong id="os"></strong>
+    </p>
+    <br>
+    <div id="userinput">
+      <input style="font-size: 1.8em; background-color:rgba(200,200,250,0.5); text-align: center;" type="text" id="blinkInterval" placeholder="blink interval"> 
+      <br>millisecs
+    </div>
+    <br>
+    <p>
+      Environment: <strong id="env"></strong>
+    </p>
+    <button style="height:2em; background-color: cornsilk" id="flash">INSTALL FIRMWARE TO ARDUINO</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
