@@ -1,4 +1,4 @@
-# Arduino Command Line Interace Electron wrapped
+# Arduino Command Line Interface Electron wrapped
 
 This app wraps the Arduino Command Line Interface (Arduino CLI) (https://github.com/machinaeXphilip/arduino-cli_electron_wrapper) inside a HTML nodejs Application with User Interface.
 
