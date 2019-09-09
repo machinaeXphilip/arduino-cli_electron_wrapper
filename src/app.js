@@ -39,24 +39,24 @@ document.getElementById("flash").addEventListener("click",main);
 
 var basepath = app.getAppPath();
 console.log(basepath);
-basepath = basepath+"/app";
+basepath = basepath+'/app';
 console.log(basepath);
 
 ///// INIT ////
 // inits arduino-cli, installs (if necessary) the cores needed
 
 document.getElementById("app").style.display = 'none'; // hide app
-document.getElementById("status").innerHTML = "checking if files need download..."
+document.getElementById("status").innerHTML = "checking if files need download...";
 
-exec(basepath+"/arduino-cli config init --config-file "+basepath+"/arduino-cli.yaml")
+exec(`"${basepath}/arduino-cli" config init --config-file "${basepath}/arduino-cli.yaml"`)
 .then((res)=>{
   console.log(res);
-  return exec(basepath+"/arduino-cli core update-index --config-file "+basepath+"/arduino-cli.yaml") // can i do that locally / offline?
+  return exec(`"${basepath}/arduino-cli" core update-index --config-file "${basepath}/arduino-cli.yaml"`) // can i do that locally / offline?
 })
 .then((res)=>{
   console.log(res.stdout);
   document.getElementById("status").innerHTML = "downloading esp8266 core files..."
-  return exec(basepath+"/arduino-cli core install esp8266:esp8266 --config-file "+basepath+"/arduino-cli.yaml")  // can i do that locally / offline?
+  return exec(`"${basepath}/arduino-cli" core install esp8266:esp8266 --config-file "${basepath}/arduino-cli.yaml"`)  // can i do that locally / offline?
 })
 .then((res)=>{
   console.log(res.stdout);
@@ -90,7 +90,7 @@ function changeLine(original,lineToChange,contentOfLine)
 async function main()
 {
   console.log(basepath);
-  let ls = await exec("ls "+basepath);
+  let ls = await exec(`ls "${basepath}"`);
   if (ls.stderr){return stderr}
   console.log(ls.stdout);
  
@@ -111,14 +111,14 @@ async function main()
   newFileContent = changeLine(newFileContent,8,"  delay("+blinkInterval+");");
   console.log(newFileContent)
   //change file
-  fs.writeFileSync(basepath+"/MyFirstSketchModified/MyFirstSketchModified.ino", newFileContent); 
+  fs.writeFileSync(`${basepath}/MyFirstSketchModified/MyFirstSketchModified.ino`, newFileContent); 
 
 
   // STEP 1
   // get list of Boards connected via SerialPorts:
   document.getElementById("status").innerHTML = "checking for boards ...";
 
-  let boardList = await exec(""+basepath+"/arduino-cli board list --config-file "+basepath+"/arduino-cli.yaml");
+  let boardList = await exec(`"${basepath}/arduino-cli" board list --config-file "${basepath}/arduino-cli.yaml"`);
   if (boardList.stderr){return boardList.stderr}
   // convert and show the output.
   boardList = boardList.stdout;
@@ -155,7 +155,7 @@ async function main()
   // install example sketch to Arduino:
   
   // compile
-  let compiled = await exec(`${basepath}/arduino-cli compile --fqbn esp8266:esp8266:d1_mini ${basepath}/MyFirstSketchModified --config-file ${basepath}/arduino-cli.yaml`);
+  let compiled = await exec(`"${basepath}/arduino-cli" compile --fqbn esp8266:esp8266:d1_mini "${basepath}/MyFirstSketchModified" --config-file "${basepath}/arduino-cli.yaml"`);
   if(compiled.stderr){return compiled.stderr}
   compiled = compiled.stdout;
   console.log(compiled);
@@ -163,7 +163,7 @@ async function main()
   document.getElementById("status").innerHTML = pathToUSBSerial + "<br> uploading...";
   // upload
 
-  let upload = await exec(`${basepath}/arduino-cli upload -p ${pathToUSBSerial} --fqbn esp8266:esp8266:d1_mini ${basepath}/MyFirstSketchModified --config-file ${basepath}/arduino-cli.yaml`);
+  let upload = await exec(`"${basepath}/arduino-cli" upload -p ${pathToUSBSerial} --fqbn esp8266:esp8266:d1_mini "${basepath}/MyFirstSketchModified" --config-file "${basepath}/arduino-cli.yaml"`);
   if (upload.stderr){return upload.stderr}
   document.getElementById("status").innerHTML = pathToUSBSerial + "<br> done.";
    

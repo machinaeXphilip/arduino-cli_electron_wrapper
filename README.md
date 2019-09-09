@@ -8,12 +8,9 @@ After receiving user input, this app uses an Arduino Code Template, modifies the
 
 This Project was build with the Electron Framework (https://electronjs.org/). It is also based on the Electron boilerplate from https://github.com/szwacz/electron-boilerplate.git with slight modifications (see below).
 
-# Disclaimer / Platform compatibility
-
-At the moment the included arduino-cli binary works only for MacOS although Electron can be easily built for Linux and Windows as well. I hope to add other platforms into the pipeline in the future and am happy about any help there.
-This is a very rough proof-of-concept in dire need of more abstractions and a more solid build pipeline.
-
 # Quick start
+
+Install the USB Drivers for the WEMOS chipsets: https://wiki.wemos.cc/downloads
 
 Make sure you have [Node.js](https://nodejs.org) installed, git clone this repository, cd into it, then type
 ```
@@ -23,6 +20,23 @@ npm start
 ...and you have a running desktop application on your screen.
 
 Then connect a WEMOS / LOLIN D1 mini board via USB to your Computer, type some number into the textinput "blinkInterval" in the User Interface and click the button "INSTALL FIRMWARE TO ARDUINO"
+
+# Disclaimer 
+
+## Platform compatibility
+
+At the moment the included arduino-cli binary works only for MacOS although Electron can be easily built for Linux and Windows as well. I hope to add other platforms into the pipeline in the future and am happy about any help there.
+This is a very rough proof-of-concept in dire need of more abstractions and a more solid build pipeline.
+
+## Known issues 
+(help wanted!)
+
+- for chipsets like the ESP8266 Boards from WEMOS and NodeMCU there needs to be an USB driver installed (https://wiki.wemos.cc/downloads).
+  It would be wonderful if that could be integrated into the app or installer, but on MacOS Users even have to allow the installation from System Preferences. So I am not sure if this can be done automatically 
+- there are not enough error handling scenarios covered (missing drivers, errors on child processes executing child commands etc.)
+- for a universal template for custom arduino flashing there should be more functions and abstractions
+- atm all arduino cores and their indexes get updated/installed via webrequests by the arduino-cli. That means that at least for the first use of the app the user needs to be online. That should in later versions be optional (abstraction needed) and otherwise be handles by local files packaged with the app (example needed)
+- only MacOS compatible binary of arduino-cli included atm. Should optimally be downloaded and packaged on built depending on the target system.
 
 # app flow
 
@@ -35,14 +49,6 @@ If found, it will use the binary of the arduino-cli `/app/arduino-cli` and its c
 ( In order for that to work, I needed to download and update the core libraries within the arduino-cli binary. If you use libraries or other cores, you might have to do that following the instructions at https://github.com/arduino/arduino-cli#step-4-find-and-install-the-right-core before packing it into this app )
 
 In this example you should be able to modify the blink Interval of the connected WEMOS / LOLIN D1 minis on board LED.
-
-
-# changes from original electron boilerplate by szwacz
-
-- npm command "release" originally included `npm test &&` before the actual release triggers inside package.json but has been removed.
-  this should not be a problem. if you want to include your own tests, check the original boilerplate or just include your own testing logic based on "npm test" command specified inside package.json. If you don't understand what this text is talking about: no worries. Just go ahead. 
-- the npm commands "preunit","unit","pree2e","e2e","test" are all still defined inside package.json but wont work until proper test scripts (see below) are provided. you will most likely only need `npm run start` and `npm run release`. 
-
 
 # Structure of the project
 
@@ -62,6 +68,15 @@ For the arduino wrapper I downloaded and installed the arduino-cli binary for Ma
 (TODO: include a platform specific install of the arduino-cli into the build pipeline)
 
 `arduino-cli.yaml`, the config file for the arduino-cli, is found in `src` and will get copied into `app` on every build. This is because the arduino-cli will modify the config file on every `$ ./arduino-cli config init` and we want a clean untouched config file before shipping the app.
+
+
+# changes from original electron boilerplate by szwacz
+
+- npm command "release" originally included `npm test &&` before the actual release triggers inside package.json but has been removed.
+  this should not be a problem. if you want to include your own tests, check the original boilerplate or just include your own testing logic based on "npm test" command specified inside package.json. If you don't understand what this text is talking about: no worries. Just go ahead. 
+- the npm commands "preunit","unit","pree2e","e2e","test" are all still defined inside package.json but wont work until proper test scripts (see below) are provided. you will most likely only need `npm run start` and `npm run release`. 
+- the npm command "release" now has 'cp /src/arduino-cli.yaml /app' included in order to add a fresh and clean arduino config file into the app (arduino-cli edits the arduino-cli.yaml)
+
 
 # Development
 
